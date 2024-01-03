@@ -1,1 +1,4 @@
-prisma,prisma db seed, bun, Hash a password with Bun,StricJS, коллекции в постман, material ui,
+prisma,prisma db seed, 
+bun, Hash a password with Bun,StricJS 
+коллекции в постман, 
+material ui, react-router-dom

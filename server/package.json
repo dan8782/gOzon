@@ -24,6 +24,7 @@
     "@stricjs/app": "^1.0.0-rc.3",
     "@stricjs/router": "^5.0.6",
     "@stricjs/utils": "^2.0.1",
+    "fs": "^0.0.1-security",
     "prisma": "^5.7.1"
   }
 }

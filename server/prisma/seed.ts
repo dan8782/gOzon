@@ -9,33 +9,21 @@ async function seed() {
             update: {},
             create: {
                 name: 'Tesla',
-                image: '1.jpeg',
+                image: 'tesla.jpeg',
                 description: 'Electric vehicle with cutting-edge technology and luxurious features.',
                 vendorInfo: 'Tesla, Inc.',
                 price: 2999000,
             },
         });
         const TouchPad = await prisma.product.upsert({
-            where: { id: 2 },
+            where: { id: 2},
             update: {},
             create: {
-                name: 'TouchPad',
-                image: '1.jpeg',
+                name: 'Trackpad Apple',
+                image: 'trackpad.jpeg',
                 description: 'Multi-functional touchpad for enhanced user experience.',
                 vendorInfo: 'High-quality touchpad from a reputable manufacturer.',
                 price: 29990,
-            },
-        });
-
-        const Iphone = await prisma.product.upsert({
-            where: { id: 3 },
-            update: {},
-            create: {
-                name: 'iPhone 15 Pro Max',
-                image: '2.jpeg',
-                description: 'The latest flagship iPhone with advanced features and performance.',
-                vendorInfo: 'Apple Inc.',
-                price: 194999,
             },
         });
 
@@ -44,7 +32,7 @@ async function seed() {
             update: {},
             create: {
                 name: 'MacBook',
-                image: '3.jpeg',
+                image: 'macbook.jpeg',
                 description: 'Powerful and sleek laptop for all your computing needs.',
                 vendorInfo: 'Apple Inc.',
                 price: 339900,
@@ -56,7 +44,7 @@ async function seed() {
             update: {},
             create: {
                 name: 'Apple TV',
-                image: '4.jpeg',
+                image: 'appletv.jpeg',
                 description: 'Smart TV entertainment with Apple ecosystem integration.',
                 vendorInfo: 'Apple Inc.',
                 price: 16460,
@@ -68,7 +56,7 @@ async function seed() {
             update: {},
             create: {
                 name: 'Apple Vision',
-                image: '5.jpeg',
+                image: 'applevision.jpeg',
                 description: 'Cutting-edge augmented reality glasses from Apple.',
                 vendorInfo: 'Apple Inc.',
                 price: 499990,
@@ -80,23 +68,12 @@ async function seed() {
             update: {},
             create: {
                 name: 'Xiaomi',
-                image: '6.jpeg',
+                image: 'xi.jpeg',
                 description: 'Quality electronic product from Xiaomi.',
                 vendorInfo: 'Xiaomi Corporation.',
                 price: 9000,
             },
         });
-
-        console.log({
-            TouchPad,
-            Iphone,
-            AppleTV,
-            AppleVision,
-            MacBook,
-            Xiaomi,
-            Tesla
-        });
-
         console.log('Product seed data created successfully!');
     } catch (error) {
         console.error('Error during seeding:', error);
