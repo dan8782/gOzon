@@ -16,7 +16,7 @@ async function seed() {
             },
         });
         const TouchPad = await prisma.product.upsert({
-            where: { id: 2},
+            where: { id: 2 },
             update: {},
             create: {
                 name: 'Trackpad Apple',

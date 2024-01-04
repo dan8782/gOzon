@@ -96,7 +96,7 @@ export async function handleProducts(): Promise<Response> {
 
 export async function handleProductById(productId: number): Promise<Response> {
     if (isNaN(productId) || productId <= 0) {
-        return new Response('Invalid product ID', { status: 400,headers });
+        return new Response('Invalid product ID', { status: 400, headers });
     }
 
     const product = await prisma.product.findUnique({
@@ -117,7 +117,7 @@ export async function handleProductById(productId: number): Promise<Response> {
 export async function handleGetUserCart(req: Request) {
     const Bearer: any = req.headers.get('authorization');
     const name = Bearer.replace(/^Bearer\s+/i, '');
-    return new Response(JSON.stringify(await getUserCart(name)), { headers,status:200 });
+    return new Response(JSON.stringify(await getUserCart(name)), { headers, status: 200 });
 }
 
 export async function getUserCart(username: string) {
@@ -126,7 +126,7 @@ export async function getUserCart(username: string) {
     });
 
     if (!user) {
-        return new Response('User not found',{headers});
+        return new Response('User not found', { headers });
     }
 
     return user.cart;
@@ -153,7 +153,7 @@ export async function handleUpdateCart(req: Request) {
             data: { cart: updatedCart },
         });
 
-        return new Response('Cart updated successfully', { status: 200,headers });
+        return new Response('Cart updated successfully', { status: 200, headers });
     } catch (error) {
         console.error('Error updating cart:', error);
         return new Response('Internal Server Error', { status: 500 });
@@ -172,14 +172,14 @@ export async function handleRemoveFromCart(req: Request) {
         if (!user) {
             return new Response('User not found', { status: 404 });
         }
-        
-        const productid:any = req.headers.get('productid');
+
+        const productid: any = req.headers.get('productid');
         const productIdNumber = parseInt(productid);
 
         const isProductInCart = user.cart.includes(productIdNumber);
 
         if (!isProductInCart) {
-            return new Response('Product not found in the cart', { status: 404,headers });
+            return new Response('Product not found in the cart', { status: 404, headers });
         }
 
         const updatedCart = user.cart.filter((id) => id !== productIdNumber);
@@ -189,71 +189,82 @@ export async function handleRemoveFromCart(req: Request) {
             data: { cart: updatedCart },
         });
 
-        return new Response('Product removed from the cart successfully', { status: 200,headers });
+        return new Response('Product removed from the cart successfully', { status: 200, headers });
     } catch (error) {
         console.error('Error removing product from cart:', error);
-        return new Response('Internal Server Error', { status: 500,headers });
+        return new Response('Internal Server Error', { status: 500, headers });
     }
 }
 
 export async function handleGetUserOrders(req: Request) {
     try {
-        const Bearer: any = req.headers.get('authorization');
-        const userId = Bearer.replace(/^Bearer\s+/i, '');
+        const userId: any = req.headers.get('authorization');
 
-        // Get the user from the database
         const user = await prisma.user.findUnique({
             where: { name: userId },
         });
 
         if (!user) {
-            return new Response('User not found', { status: 404 });
+            return new Response('User not found', { status: 404, headers });
         }
 
-        // Return the user's orders
-        return new Response(JSON.stringify(user.orders), { status: 200 });
+        // Fetch detailed information for each order
+        const ordersInfo = await Promise.all(user.orders.map(orderId => getOrderInfo(orderId)));
+
+        return new Response(JSON.stringify(ordersInfo), { status: 200, headers });
     } catch (error) {
         console.error('Error getting user orders:', error);
         return new Response('Internal Server Error', { status: 500 });
     }
 }
 
-export async function handleCreateOrder(req: Request) {
-    try {
-        // Extract the user ID from the request headers
-        const Bearer: any = req.headers.get('authorization');
-        const userId = Bearer.replace(/^Bearer\s+/i, '');
 
-        // Check if the user ID is not available
-        if (!userId || userId.length === 0) {
-            return new Response('User not authenticated', { status: 401 });
+export async function getOrderInfo(orderId: number) {
+    try {
+        const order = await prisma.order.findUnique({
+            where: { id: orderId },
+        });
+
+        if (!order) {
+            return null; // Order not found
         }
 
-        // Get the user from the database
+        return order;
+    } catch (error) {
+        console.error('Error getting order info:', error);
+        throw new Error('Internal Server Error');
+    }
+}
+
+
+
+// создает заказ и очищает корзину
+export async function handleCreateOrder(req: Request) {
+    try {
+        const userId: any = req.headers.get('authorization');
+
+        if (!userId || userId.length === 0) {
+            return new Response('User not authenticated', { status: 401, headers });
+        }
+
         const user = await prisma.user.findUnique({
             where: { name: userId },
         });
 
-        // Check if the user is not found
         if (!user) {
-            return new Response('User not found', { status: 404 });
+            return new Response('User not found', { status: 404, headers });
         }
 
-        // Fetch product details for the items in the cart
         const products = await prisma.product.findMany({
             where: { id: { in: user.cart } },
         });
 
-        // Calculate the total cost based on product prices
         const cost = products.reduce((totalCost, product) => {
-            // Find the quantity of each product in the cart
             const quantityInCart = user.cart.filter((productId) => productId === product.id).length;
 
-            // Add the product's price multiplied by quantity to the total cost
             return totalCost + product.price * quantityInCart;
         }, 0);
 
-        // Create a new order in the database
         const newOrder = await prisma.order.create({
             data: {
                 userid: user.id,
@@ -262,23 +273,22 @@ export async function handleCreateOrder(req: Request) {
             },
         });
 
-        // Update the user's orders and clear the cart in the database
         await prisma.user.update({
             where: { name: userId },
             data: { orders: { push: newOrder.id }, cart: [] },
         });
 
-        return new Response('Order created successfully', { status: 200 });
+        return new Response('Order created successfully', { status: 200, headers });
     } catch (error) {
         console.error('Error creating order:', error);
-        return new Response('Internal Server Error', { status: 500 });
+        return new Response('Internal Server Error', { status: 500, headers });
     }
 }
 
 
+// считает стоимость корзины 
 export async function calculateCartCost(cart: number[]): Promise<number> {
     try {
-        // Fetch the products from the database based on the product IDs in the cart
         const products = await prisma.product.findMany({
             where: {
                 id: {
@@ -287,7 +297,6 @@ export async function calculateCartCost(cart: number[]): Promise<number> {
             },
         });
 
-        // Sum up the prices of the products
         const totalCost = products.reduce((sum, product) => sum + product.price, 0);
 
         return totalCost;
