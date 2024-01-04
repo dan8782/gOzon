@@ -1,5 +1,3 @@
-# Your Project Name
-
 ## Описание
 Мой пример использования bun + react + typescript + prisma
 
