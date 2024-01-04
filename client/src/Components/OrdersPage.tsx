@@ -39,7 +39,7 @@ const MyOrdersPage: React.FC<MyOrdersPageProps> = () => {
     <Box sx={{ marginTop: 10, padding: 5 }}>
       <HeaderBar />
       <Typography variant="h4" gutterBottom>
-        My Orders
+        Мои заказы
       </Typography>
       {orders.length > 0 ? (
         <List>
@@ -47,7 +47,7 @@ const MyOrdersPage: React.FC<MyOrdersPageProps> = () => {
             <ListItem key={order.id}>
               <ListItemText
                 primary={`Order ID: ${order.id}`}
-                secondary={`Cost: ${order.cost} | Date: ${new Date(order.createdAt).toLocaleString()}`}
+                secondary={`Цена: ${order.cost}₽ | Дата: ${new Date(order.createdAt).toLocaleString()}`}
               />
             </ListItem>
           ))}
