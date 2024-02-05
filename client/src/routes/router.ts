@@ -36,7 +36,7 @@ const router = createBrowserRouter([
 ]);
 
 function checkAccess() {
-    const storedData = localStorage.getItem('name'); // Replace 'yourKey' with the actual key you use in local storage
+    const storedData = localStorage.getItem('name');
     if (storedData) {
         return null;
     } else {

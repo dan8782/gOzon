@@ -14,7 +14,6 @@ const SignUpPage: React.FC = () => {
   const handleSignUp = async () => {
     if (password === repeatPassword) {
       try {
-        // Replace the endpoint with your actual registration endpoint
         const response = await axios.post('http://localhost:3001/signup', { name, password });
 
         if (response.status === 200) {

@@ -1,4 +1,3 @@
-// Импортируйте необходимые зависимости
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Link, Container } from '@mui/material';
 import HeaderBar from './HeaderBar';
@@ -6,12 +5,10 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
-    // Создайте состояния для хранения имени пользователя и пароля
     const [name, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-    // Обработчик для отправки данных на сервер при входе
     const handleLogin = async () => {
         try {
             const response = await axios.post('http://localhost:3001/login', { name, password });

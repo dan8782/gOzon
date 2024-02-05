@@ -1,4 +1,3 @@
-// MainPage.tsx
 import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Container, Input, FormControl, InputLabel, Select, MenuItem, Grid } from '@mui/material';
 import HeaderBar from './HeaderBar';
